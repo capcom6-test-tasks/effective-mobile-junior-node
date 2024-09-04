@@ -1,6 +1,10 @@
 // @ts-check
 
+const { EventEmitter } = require('events');
+
 const { where } = require('./utils');
+
+const { Event } = require('../events');
 
 const FILTER_FIELDS = {
   id: {
@@ -16,6 +20,8 @@ const FILTER_FIELDS = {
 const INSERT_FIELDS = [
   'name',
 ];
+
+const events = new EventEmitter();
 
 const migrate = async (/** @type {import('pg').ClientBase} */ client) => {
   await client.query(`CREATE TABLE IF NOT EXISTS products (
@@ -44,9 +50,11 @@ const insert = async (
   }
 
   const query = `INSERT INTO products (${fields.join(',')}) VALUES (${Array(fields.length).fill('$').map((_, i) => `$${i + 1}`).join(',')}) RETURNING *`;
-  const res = await client.query(query, args);
+  const { rows } = await client.query(query, args);
 
-  return res.rows[0];
+  events.emit('create', new Event(new Date(), rows[0].id, 'Product created', rows[0]));
+
+  return rows[0];
 };
 
 /** @returns {Promise<{id: number, name: string}[]>} */
@@ -70,4 +78,6 @@ module.exports = {
   migrate,
   insert,
   select,
+
+  events,
 };

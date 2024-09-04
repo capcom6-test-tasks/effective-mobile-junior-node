@@ -1,4 +1,8 @@
+const { EventEmitter } = require('events');
+
 const { where } = require('./utils');
+
+const { Event } = require('../events');
 
 const TYPE = {
     SHELF: 'shelf',
@@ -14,6 +18,21 @@ const FILTER_FIELDS = {
         condition: (idx) => `shop_id = $${idx}`,
         value: (value) => value,
     },
+};
+
+const events = new EventEmitter();
+
+const migrate = async (/** @type {import('pg').ClientBase} */ client) => {
+    await client.query(`CREATE TABLE IF NOT EXISTS stock (
+          id SERIAL PRIMARY KEY,
+          product_id INTEGER NOT NULL REFERENCES products(id),
+          shop_id INTEGER NOT NULL,
+          type VARCHAR(8) NOT NULL CHECK (type IN ('shelf', 'order')),
+          quantity DECIMAL(10, 3) NOT NULL,
+
+          UNIQUE(product_id, shop_id, type)    
+      );`);
+    await client.query(`CREATE INDEX IF NOT EXISTS stock_quantity_idx ON stock (quantity);`);
 };
 
 const select = async (
@@ -93,19 +112,6 @@ const select = async (
     //     }));
 }
 
-const migrate = async (/** @type {import('pg').ClientBase} */ client) => {
-    await client.query(`CREATE TABLE IF NOT EXISTS stock (
-          id SERIAL PRIMARY KEY,
-          product_id INTEGER NOT NULL REFERENCES products(id),
-          shop_id INTEGER NOT NULL,
-          type VARCHAR(8) NOT NULL CHECK (type IN ('shelf', 'order')),
-          quantity DECIMAL(10, 3) NOT NULL,
-
-          UNIQUE(product_id, shop_id, type)    
-      );`);
-    await client.query(`CREATE INDEX IF NOT EXISTS stock_quantity_idx ON stock (quantity);`);
-};
-
 const replace = async (
     /** @type {import('pg').ClientBase | import('pg').Pool} */ client,
     /** @type {{product_id: string, shop_id: string, type: string, quantity: number}} */ item
@@ -115,6 +121,8 @@ const replace = async (
     RETURNING *`;
 
     const { rows } = await client.query(query, [item.product_id, item.shop_id, item.type, item.quantity]);
+
+    events.emit('replace', new Event(new Date(), rows[0].product_id, 'Stock replaced', rows[0], rows[0].shop_id));
 
     return rows[0];
 };
@@ -131,6 +139,8 @@ const update = async (
 
     const { rows } = await client.query(query, [item.product_id, item.shop_id, item.type, item.delta]);
 
+    events.emit('update', new Event(new Date(), rows[0].product_id, 'Stock updated', rows[0], rows[0].shop_id));
+
     return rows[0];
 }
 
@@ -140,4 +150,6 @@ module.exports = {
     select,
     replace,
     update,
+
+    events,
 };
