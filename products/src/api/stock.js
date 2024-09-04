@@ -47,7 +47,7 @@ router.get('/', async (req, res) => {
 });
 
 router.put('/', async (req, res) => {
-  /** @type {{plu: string, shop_id: string, stock: {shelf: number, order: number}}} */
+  /** @type {{plu: string, shop_id: string, stock: {shelf?: number, order?: number}}} */
   const body = req.body;
 
   if (!body.plu

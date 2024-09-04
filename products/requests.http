@@ -12,7 +12,7 @@ Content-Type: application/json
 }
 
 ###
-GET {{baseUrl}}/stock?shelf_gte=60 HTTP/1.1
+GET {{baseUrl}}/stock?plu=1&shop_id=1 HTTP/1.1
 
 ###
 PUT {{baseUrl}}/stock HTTP/1.1
