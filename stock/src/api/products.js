@@ -1,8 +1,7 @@
 // @ts-check
 
-const express = require('express');
-
-const router = express.Router();
+// @ts-ignore
+const router = require("express-promise-router")();
 
 const pool = require('../db');
 const { product: model } = require('../models');

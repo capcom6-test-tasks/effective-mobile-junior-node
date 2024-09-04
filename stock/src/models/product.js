@@ -1,9 +1,11 @@
 // @ts-check
 
+const { where } = require('./utils');
+
 const FILTER_FIELDS = {
   id: {
-    condition: (idx) => `id = $${idx}`,
-    value: (val) => val,
+    condition: (idx) => `id = ANY ($${idx})`,
+    value: (val) => [val],
   },
   name: {
     condition: (idx) => `name ILIKE $${idx}`,
@@ -52,19 +54,7 @@ const select = async (
   /** @type {import('pg').ClientBase | import('pg').Pool} */ client,
   /** @type {{name?: string, id?: string}|undefined} */ filter = undefined,
 ) => {
-  const selection = [];
-  const args = [];
-
-  if (filter) {
-    for (const [field, { condition, value }] of Object.entries(FILTER_FIELDS)) {
-      if (!filter[field]) {
-        continue;
-      }
-
-      selection.push(condition(args.length + 1));
-      args.push(value(filter[field]));
-    }
-  }
+  const { selection, args } = where(FILTER_FIELDS, filter);
 
   let query = 'SELECT * FROM products';
   if (selection.length) {

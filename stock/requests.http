@@ -12,10 +12,43 @@ Content-Type: application/json
 }
 
 ###
-GET {{baseUrl}}/stock?shelf_gt=1 HTTP/1.1
+GET {{baseUrl}}/stock?shelf_gte=60 HTTP/1.1
 
 ###
 PUT {{baseUrl}}/stock HTTP/1.1
 Content-Type: application/json
 
-{}
+{
+    "plu": 1,
+    "shop_id": {{$randomInt 1 10}},
+    "stock": {
+        "shelf": {{$randomInt 0 100}},
+        "order": {{$randomInt 0 100}}
+    }
+}
+
+###
+PATCH {{baseUrl}}/stock/increase HTTP/1.1
+Content-Type: application/json
+
+{
+    "plu": 1,
+    "shop_id": 1,
+    "delta": {
+        "shelf": 2,
+        "order": 3
+    }
+}
+
+###
+PATCH {{baseUrl}}/stock/decrease HTTP/1.1
+Content-Type: application/json
+
+{
+    "plu": 1,
+    "shop_id": 1,
+    "delta": {
+        "shelf": 2,
+        "order": 3
+    }
+}
