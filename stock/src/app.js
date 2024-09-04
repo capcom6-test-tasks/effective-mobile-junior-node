@@ -3,14 +3,13 @@ const morgan = require('morgan');
 const helmet = require('helmet');
 const cors = require('cors');
 
-require('dotenv').config();
-
 const middlewares = require('./middlewares');
 const api = require('./api');
+const config = require('./config');
 
 const app = express();
 
-app.use(morgan(process.env.NODE_ENV === 'production' ? 'common' : 'dev'));
+app.use(morgan(config.env === 'production' ? 'common' : 'dev'));
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
