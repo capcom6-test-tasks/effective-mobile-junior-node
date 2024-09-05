@@ -3,7 +3,8 @@ const express = require('express');
 const products = require('./products');
 const stock = require('./stock');
 
-const router = express.Router();
+// @ts-ignore
+const router = require('express-promise-router')();
 
 router.get('/', (req, res) => {
   res.json({

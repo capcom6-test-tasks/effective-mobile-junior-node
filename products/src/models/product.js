@@ -52,7 +52,7 @@ const insert = async (
   const query = `INSERT INTO products (${fields.join(',')}) VALUES (${Array(fields.length).fill('$').map((_, i) => `$${i + 1}`).join(',')}) RETURNING *`;
   const { rows } = await client.query(query, args);
 
-  events.emit('create', new Event(new Date(), rows[0].id, 'Product created', rows[0]));
+  events.emit('create', new Event(new Date(), rows[0].id, 'products:created', rows[0]));
 
   return rows[0];
 };

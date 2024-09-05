@@ -1,0 +1,4 @@
+@baseUrl=http://localhost:3001/api/v1
+
+###
+GET {{baseUrl}}/events HTTP/1.1

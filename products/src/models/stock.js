@@ -127,7 +127,7 @@ const replace = async (
     [item.product_id, item.shop_id, item.type, item.quantity],
   );
 
-  events.emit('replace', new Event(new Date(), rows[0].product_id, 'Stock replaced', rows[0], rows[0].shop_id));
+  events.emit('replace', new Event(new Date(), rows[0].product_id, 'stock:replaced', rows[0], rows[0].shop_id));
 
   return rows[0];
 };
@@ -148,7 +148,7 @@ const update = async (
     [item.product_id, item.shop_id, item.type, item.delta],
   );
 
-  events.emit('update', new Event(new Date(), rows[0].product_id, 'Stock updated', rows[0], rows[0].shop_id));
+  events.emit('update', new Event(new Date(), rows[0].product_id, 'stock:updated', rows[0], rows[0].shop_id));
 
   return rows[0];
 };
