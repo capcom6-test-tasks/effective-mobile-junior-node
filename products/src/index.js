@@ -5,7 +5,7 @@ const { Publisher } = require('./events');
 const { product, stock } = require('./models');
 
 async function initEvents() {
-  const publisher = new Publisher(config.brokerUrl, config.eventsKey);
+  const publisher = new Publisher(config.brokerUrl, config.queueName);
   await publisher.open();
 
   product.events.on('create', async (event) => {

@@ -1,25 +1,25 @@
 const { createClient } = require('redis');
 
 class Publisher {
-    constructor(
-        brokerUrl,
-        key
-    ) {
-        this.client = createClient({ url: brokerUrl });
-        this.key = key;
-    }
+  constructor(
+    brokerUrl,
+    queueName,
+  ) {
+    this.client = createClient({ url: brokerUrl });
+    this.queueName = queueName;
+  }
 
-    async open() {
-        await this.client.connect();
-    }
+  async open() {
+    await this.client.connect();
+  }
 
-    async publish(event) {
-        await this.client.rPush(this.key, JSON.stringify(event));
-    }
+  async publish(event) {
+    await this.client.rPush(this.queueName, JSON.stringify(event));
+  }
 
-    async close() {
-        await this.client.quit();
-    }
+  async close() {
+    await this.client.quit();
+  }
 }
 
 module.exports = Publisher;

@@ -38,12 +38,12 @@ const insert = async (
   const fields = [];
   const args = [];
 
-  for (const field of INSERT_FIELDS) {
+  INSERT_FIELDS.forEach((field) => {
     if (item[field]) {
       fields.push(field);
       args.push(item[field]);
     }
-  }
+  });
 
   if (!fields.length) {
     throw new Error('No fields to insert');

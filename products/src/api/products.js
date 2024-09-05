@@ -1,7 +1,7 @@
 // @ts-check
 
 // @ts-ignore
-const router = require("express-promise-router")();
+const router = require('express-promise-router')();
 
 const pool = require('../db');
 const { product: model } = require('../models');
@@ -21,18 +21,18 @@ router.get('/', async (req, res) => {
   });
 });
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, /** @type {import('express').Response} */ res) => {
   /** @type {{name: string}} */
-  const body = req.body;
-  if (!body.name) {
+  const payload = req.body;
+  if (!payload.name) {
     return res.status(400).json({
       message: 'Missing name',
     });
   }
 
-  const product = await model.insert(pool, body);
+  const product = await model.insert(pool, payload);
 
-  res.json({
+  return res.json({
     product: modelToDto(product),
   });
 });
