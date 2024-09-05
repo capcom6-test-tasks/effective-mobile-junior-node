@@ -7,7 +7,7 @@ const Queue = require('./queue');
 const pool = require('./db');
 
 async function initQueue() {
-  const client = redis.createClient(config.brokerUrl);
+  const client = redis.createClient({ url: config.brokerUrl });
   await client.connect();
 
   const queue = new Queue(client);
