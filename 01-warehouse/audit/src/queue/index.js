@@ -35,16 +35,23 @@ class Queue {
 
                 console.error(e);
             } finally {
-                timer = setTimeout(readNext, interval);
+                if (timer) {
+                    timer = setTimeout(readNext, interval);
+                }
             }
         };
 
+        /** @type {NodeJS.Timeout | null} */
         let timer = setTimeout(async () => {
             await readNext();
         }, 0);
 
         return () => {
-            clearTimeout(timer);
+            if (timer) {
+                clearTimeout(timer);
+            }
+
+            timer = null;
         };
     }
 }

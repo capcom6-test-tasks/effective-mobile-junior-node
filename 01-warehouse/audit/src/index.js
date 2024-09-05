@@ -17,7 +17,9 @@ async function initQueue() {
 
   return async () => {
     unsubscribe();
-    await client.quit();
+    if (client.isOpen) {
+      await client.quit();
+    }
   };
 }
 
@@ -34,8 +36,12 @@ async function main() {
   });
 
   process.on('SIGINT', async () => {
-    await stop();
+    /* eslint-disable no-console */
+    console.log('Shutting down...');
     server.close();
+    await stop();
+    console.log('Bye!');
+    /* eslint-enable no-console */
   });
 }
 

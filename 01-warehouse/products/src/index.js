@@ -1,3 +1,5 @@
+const { promisify } = require('util');
+
 const app = require('./app');
 const config = require('./config');
 const { migrate } = require('./models');
@@ -8,9 +10,10 @@ async function initEvents() {
   const publisher = new Publisher(config.brokerUrl, config.queueName);
   await publisher.open();
 
-  product.events.on('create', async (event) => {
-    await publisher.publish(event);
-  });
+  product.events
+    .on('create', async (event) => {
+      await publisher.publish(event);
+    });
 
   stock.events
     .on('replace', async (event) => {
@@ -35,9 +38,13 @@ async function main() {
     /* eslint-enable no-console */
   });
 
-  process.on('SIGINT', () => {
+  process.on('SIGINT', async () => {
+    /* eslint-disable no-console */
+    console.log('Shutting down...');
     server.close();
-    publisher.close();
+    await publisher.close();
+    console.log('Bye!');
+    /* eslint-enable no-console */
   });
 }
 

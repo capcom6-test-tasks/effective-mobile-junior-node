@@ -18,7 +18,9 @@ class Publisher {
   }
 
   async close() {
-    await this.client.quit();
+    if (this.client.isOpen) {
+      await this.client.quit();
+    }
   }
 }
 
