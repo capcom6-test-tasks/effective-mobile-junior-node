@@ -9,7 +9,7 @@ class Event {
     shop_id,
   ) {
     this.date = date;
-    this.plu = plu;
+    this.product_id = plu;
     this.action = action;
     this.details = details;
     this.shop_id = shop_id;

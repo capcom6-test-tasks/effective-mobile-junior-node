@@ -1,4 +1,10 @@
 @baseUrl=http://localhost:3001/api/v1
 
 ###
-GET {{baseUrl}}/events HTTP/1.1
+GET {{baseUrl}}/events?page=3&limit=2 HTTP/1.1
+
+###
+GET {{baseUrl}}/events?action=products%3Acreated HTTP/1.1
+
+###
+GET {{baseUrl}}/events?plu=1 HTTP/1.1
